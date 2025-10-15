@@ -1,3 +1,5 @@
+#include "hzpch.h"
+
 #include "Application.h"
 
 namespace Hazel
