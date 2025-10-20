@@ -8,6 +8,13 @@ workspace (EngineName)
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- 包含相对于根目录的其他项目
+IncludeDir = {}
+IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
+
+-- 将GLFW premake5.lua包含进来,相当于把内容拷贝在这里面
+include "Hazel/vendor/GLFW"
+
 project (EngineName)
     location (EngineName)
     kind "SharedLib" -- 配置类型
@@ -22,7 +29,7 @@ project (EngineName)
 
     -- 命令行选项
     buildoptions{
-	"/utf-8"
+	"/utf-8",
     }
 
     files {
@@ -34,7 +41,17 @@ project (EngineName)
     includedirs {
 	"%{prj.name}/vendor",
         "%{prj.name}/vendor/spdlog/include",
-        "%{prj.name}/src"
+        "%{prj.name}/src",
+	"%{prj.name}/src/Hazel",
+        -- 链接GLFW头文件目录
+        "%{IncludeDir.GLFW}"
+    }
+    -- 链接库      
+    links {
+        "GLFW",
+        "opengl32.lib",
+	"msvcrt.lib",
+	"ucrtd.lib"
     }
 
     filter "system:windows"
