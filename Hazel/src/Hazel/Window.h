@@ -25,7 +25,7 @@ namespace Hazel {
     {
     public:
         // 事件回调函数类型定义,事件系统会调用这个回调函数来处理窗口事件 
-        // 使用std::function封装一个接受Event引用的函数
+        // 使用std::function封装一个接受Event引用，返回值为空的函数
         using EventCallbackFn = std::function<void(Event&)>;
 
         virtual ~Window() {}

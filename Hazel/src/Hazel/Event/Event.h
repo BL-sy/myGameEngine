@@ -56,7 +56,6 @@ namespace Hazel {
         {
             return GetCategoryFlags() & category;
         }
-    protected:
         // 判断事件是否被处理
         // 事件被处理后就不会再传递给其他层
         bool Handled = false;

@@ -17,11 +17,13 @@ namespace Hazel {
         inline unsigned int GetWidth() const override { return m_Data.Width; };
         inline unsigned int GetHeight() const override { return m_Data.Height; };
 
+        // 设置事件回调函数 
         inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; };
         void SetVSync(bool enabled) override;
         bool IsVSync() const override;
     private:
         void Init(const WindowProps& props);
+        void SetCallbacks();
         virtual void Shutdown();
     private:
         GLFWwindow* m_Window;
