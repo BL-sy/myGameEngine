@@ -16,18 +16,18 @@ namespace Hazel {
 
         void Run();
 
-		// 回调glfw窗口事件的函数
+        // 回调glfw窗口事件的函数
         void OnEvent(Event& e);
 
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* overlay);
+        void PushLayer(Layer* layer);
+        void PushOverlay(Layer* overlay);
 
     private:
         bool OnWindowClose(WindowCloseEvent& e);
         std::unique_ptr<Window> m_Window;
         bool m_Running = true;
 
-		LayerStack m_LayerStack;
+        LayerStack m_LayerStack;
     };
 
     // To be defined in CLIENT

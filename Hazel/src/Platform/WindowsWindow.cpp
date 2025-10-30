@@ -5,6 +5,8 @@
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
 
+#include <Glad/glad.h>
+
 namespace Hazel {
 
     static bool s_GLFWInitialized = false;
@@ -42,7 +44,6 @@ namespace Hazel {
 
         if (!s_GLFWInitialized)
         {
-
             int success = glfwInit();
             HZ_CORE_ASSERT(success, "Could not initialize GLFW!");
             // 设置glfw错误回调函数
@@ -54,6 +55,13 @@ namespace Hazel {
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
         // 设置glfw当前的上下文
         glfwMakeContextCurrent(m_Window);
+        //加载Glad
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		HZ_CORE_ASSERT(status, "Failed to initialize Glad!");
+
+        // 验证加载结果（打印OpenGL版本和显卡信息）
+        HZ_CORE_INFO("OpenGL Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+        HZ_CORE_INFO("OpenGL Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
 
         // 设置窗口用户指针为窗口数据结构体的地址
         // 这样可以在回调函数中访问窗口数据

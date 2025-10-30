@@ -11,9 +11,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- 包含相对于根目录的其他项目
 IncludeDir = {}
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
+IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 
 -- 将GLFW premake5.lua包含进来,相当于把内容拷贝在这里面
 include "Hazel/vendor/GLFW"
+include "Hazel/vendor/Glad"
 
 project (EngineName)
     location (EngineName)
@@ -44,12 +46,14 @@ project (EngineName)
         "%{prj.name}/src",
 	"%{prj.name}/src/Hazel",
         -- 链接GLFW头文件目录
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+	"%{IncludeDir.Glad}"
     }
     -- 链接库      
     links {
         "GLFW",
         "opengl32.lib",
+	"Glad",
     }
 
     filter "system:windows"
@@ -60,7 +64,8 @@ project (EngineName)
         -- 预处理器
         defines {
             "HZ_PLATFORM_WINDOWS",
-            "HZ_BUILD_DLL"
+            "HZ_BUILD_DLL",
+	    "GLFW_INCLUDE_NONE"
         }
 
         -- dll复制命令

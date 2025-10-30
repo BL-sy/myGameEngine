@@ -1,10 +1,11 @@
 #include "hzpch.h"
 #include "Application.h"
 
-#include "Hazel/Log.h"
+#include "Hazel/log.h"
 #include "Hazel/Layer.h"
 
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Hazel
 {
@@ -59,12 +60,12 @@ namespace Hazel
             glClearColor(1, 0, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
-			// 更新每一层
+            // 更新每一层
             for(Layer* layer : m_LayerStack)
                 layer->OnUpdate();
             
-			// 更新窗口
-			m_Window->OnUpdate();
+            // 更新窗口
+            m_Window->OnUpdate();
         }
     }
 
