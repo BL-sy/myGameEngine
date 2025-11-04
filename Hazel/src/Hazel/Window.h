@@ -34,9 +34,9 @@ namespace Hazel {
         virtual unsigned int GetWidth() const = 0;
         virtual unsigned int GetHeight() const = 0;
 
-		// 设置事件回调函数
+        // 设置事件回调函数
         virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
-		// 启用或禁用垂直同步
+        // 启用或禁用垂直同步
         virtual void SetVSync(bool enabled) = 0;
         virtual bool IsVSync() const = 0;
 

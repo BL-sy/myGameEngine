@@ -12,10 +12,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
+IncludeDir["ImGui"] = "Hazel/vendor/imgui"
 
 -- 将GLFW premake5.lua包含进来,相当于把内容拷贝在这里面
 include "Hazel/vendor/GLFW"
 include "Hazel/vendor/Glad"
+include "Hazel/vendor/ImGui"
 
 project (EngineName)
     location (EngineName)
@@ -41,19 +43,21 @@ project (EngineName)
 
     -- 包含目录
     includedirs {
+	"%{prj.name}",
 	"%{prj.name}/vendor",
         "%{prj.name}/vendor/spdlog/include",
         "%{prj.name}/src",
-	"%{prj.name}/src/Hazel",
-        -- 链接GLFW头文件目录
+        -- 链接头文件目录
         "%{IncludeDir.GLFW}",
-	"%{IncludeDir.Glad}"
+	"%{IncludeDir.Glad}",
+	"%{IncludeDir.ImGui}"
     }
     -- 链接库      
     links {
         "GLFW",
         "opengl32.lib",
 	"Glad",
+	"ImGui",
     }
 
     filter "system:windows"
@@ -106,6 +110,8 @@ project "Sandbox"
     includedirs {
         "Hazel/vendor/spdlog/include",
         "Hazel/src",
+	"Hazel",
+        "Hazel/vendor",
     }
 
     links { "Hazel" }

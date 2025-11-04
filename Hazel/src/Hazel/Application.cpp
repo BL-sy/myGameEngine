@@ -13,8 +13,13 @@ namespace Hazel
 // 将成员函数绑定到当前对象，并占位第一个参数
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
+    Application* Application::s_Instance = nullptr;
+
     Application::Application()
     {
+        HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
+        s_Instance = this;
+
         // Application创建窗口
         m_Window = std::unique_ptr<Window>(Window::Create());
         // Application设置窗口事件的回调函数

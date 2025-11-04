@@ -1,9 +1,9 @@
 #include "hzpch.h"
 #include "WindowsWindow.h"
 
-#include "Event/ApplicationEvent.h"
-#include "Event/KeyEvent.h"
-#include "Event/MouseEvent.h"
+#include "Hazel/Event/ApplicationEvent.h"
+#include "Hazel/Event/KeyEvent.h"
+#include "Hazel/Event/MouseEvent.h"
 
 #include <Glad/glad.h>
 
@@ -56,8 +56,8 @@ namespace Hazel {
         // 设置glfw当前的上下文
         glfwMakeContextCurrent(m_Window);
         //加载Glad
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		HZ_CORE_ASSERT(status, "Failed to initialize Glad!");
+        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        HZ_CORE_ASSERT(status, "Failed to initialize Glad!");
 
         // 验证加载结果（打印OpenGL版本和显卡信息）
         HZ_CORE_INFO("OpenGL Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
@@ -71,7 +71,7 @@ namespace Hazel {
         SetCallbacks();
     }
 
-	// 设置Windows窗口回调函数
+    // 设置Windows窗口回调函数
     void WindowsWindow::SetCallbacks()
     {
         // 窗口大小改变事件回调
@@ -157,6 +157,14 @@ namespace Hazel {
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
                 MouseMovedEvent event((float)xPos, (float)yPos);
+                data.EventCallback(event);
+            });
+
+        // 键盘输入字符事件回调
+        glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+            {
+                WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+                KeyTypedEvent event(keycode);
                 data.EventCallback(event);
             });
     }

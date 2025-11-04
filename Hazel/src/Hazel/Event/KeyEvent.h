@@ -55,4 +55,24 @@ namespace Hazel {
 
         EVENT_CLASS_TYPE(KeyReleased)
     };
+
+	// 键盘输入事件
+    class HAZEL_API KeyTypedEvent : public KeyEvent
+    {
+    public:
+        // repeatCount 表示按键重复的次数（用于处理按键长按的情况）
+        KeyTypedEvent(int keycode)
+            : KeyEvent(keycode)  {
+        }
+
+        std::string ToString() const override
+        {
+            std::stringstream ss;
+            ss << "KeyTypedEvent: " << m_KeyCode ;
+            return ss.str();
+        }
+        // 宏定义，定义事件的类型
+        // 通过该宏可以获取事件的静态类型、动态类型和名称
+        EVENT_CLASS_TYPE(KeyTyped)
+    };
 }

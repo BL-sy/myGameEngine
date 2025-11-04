@@ -1,7 +1,7 @@
 #pragma once
 
-#include "./Hazel/Window.h"
-#include "./Hazel/log.h"
+#include "Hazel/Window.h"
+#include "Hazel/log.h"
 
 #include <GLFW/glfw3.h>
 

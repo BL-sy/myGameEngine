@@ -21,12 +21,14 @@ namespace Hazel {
     {
         // emplace 返回新插入元素的迭代器，赋值给 m_LayerInsert 完成更新
         m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
+        layer->OnAttach();
     }
 
     // 插入 Overlay：直接插在层栈末尾（Overlay 区域），不影响 m_LayerInsert
     void LayerStack::PushOverlay(Layer* overlay)
     {
         m_Layers.emplace_back(overlay);
+        overlay->OnAttach();
     }
 
     // 移除普通层：更新 m_LayerInsert（防止迭代器失效）
