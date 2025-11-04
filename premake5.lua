@@ -23,6 +23,7 @@ project (EngineName)
     location (EngineName)
     kind "SharedLib" -- 配置类型
     language "C++"
+    staticruntime "Off" -- 动态链接运行库
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}") -- 输出目录
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}") -- 中间文件目录
@@ -33,7 +34,7 @@ project (EngineName)
 
     -- 命令行选项
     buildoptions{
-	"/utf-8",
+    "/utf-8",
     }
 
     files {
@@ -43,61 +44,61 @@ project (EngineName)
 
     -- 包含目录
     includedirs {
-	"%{prj.name}",
-	"%{prj.name}/vendor",
+        "%{prj.name}",
+        "%{prj.name}/vendor",
         "%{prj.name}/vendor/spdlog/include",
         "%{prj.name}/src",
         -- 链接头文件目录
         "%{IncludeDir.GLFW}",
-	"%{IncludeDir.Glad}",
-	"%{IncludeDir.ImGui}"
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}"
     }
     -- 链接库      
     links {
         "GLFW",
         "opengl32.lib",
-	"Glad",
-	"ImGui",
+        "Glad",
+        "ImGui",
     }
 
     filter "system:windows"
         cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
 
         -- 预处理器
         defines {
             "HZ_PLATFORM_WINDOWS",
             "HZ_BUILD_DLL",
-	    "GLFW_INCLUDE_NONE"
+            "GLFW_INCLUDE_NONE"
         }
 
         -- dll复制命令
         postbuildcommands {
             -- 复制DLL到Sandbox输出目录
-            "{COPY} \"%{cfg.buildtarget.relpath}\" \"../bin/" .. outputdir .. "/Sandbox/\""
+            ("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
         }
 
     filter "configurations:Debug"
         defines "HZ_DEBUG"
-	buildoptions "/MDd"
+        runtime "Debug" -- 运行库, Debug版本
         symbols "On"
 
     filter "configurations:Release"
         defines "HZ_RELEASE"
-	buildoptions "/MD"
+        runtime "Release" -- 运行库, Release版本
         optimize "On"
 
 
     filter "configurations:Dist"
         defines "HZ_DIST"
-	buildoptions "/MD"
+        runtime "Release"
         optimize "On"
 
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
+    staticruntime "Off" -- 动态链接运行库
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}") -- 输出目录
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}") -- 中间文件目录
@@ -110,7 +111,7 @@ project "Sandbox"
     includedirs {
         "Hazel/vendor/spdlog/include",
         "Hazel/src",
-	"Hazel",
+        "Hazel",
         "Hazel/vendor",
     }
 
@@ -118,27 +119,26 @@ project "Sandbox"
 
     -- 命令行选项
     buildoptions{
-	"/utf-8"
+    "/utf-8"
     }
 
     filter "system:windows"
         cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
         defines { "HZ_PLATFORM_WINDOWS" }
 
     filter "configurations:Debug"
         defines "HZ_DEBUG"
-	buildoptions "/MDd"
+        runtime "Debug" -- 运行库, Debug版本
         symbols "On"
 
     filter "configurations:Release"
         defines "HZ_RELEASE"
-	buildoptions "/MD"
+        runtime "Release" -- 运行库, Release版本
         optimize "On"
 
 
     filter "configurations:Dist"
         defines "HZ_DIST"
-	buildoptions "/MD"
+        runtime "Release"
         optimize "On"
