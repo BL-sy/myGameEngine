@@ -95,7 +95,7 @@ namespace Hazel {
         dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolledEvent));
         dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyPressedEvent));
         dispatcher.Dispatch<KeyReleasedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent));
-		dispatcher.Dispatch<KeyTypedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyTypedEvent));
+        dispatcher.Dispatch<KeyTypedEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnKeyTypedEvent));
         dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnWindowResizeEvent));
     }
 
@@ -125,7 +125,9 @@ namespace Hazel {
     bool ImGuiLayer::OnMouseScrolledEvent(MouseScrolledEvent& e)
     {
         ImGuiIO& io = ImGui::GetIO();
+        // 垂直滚轮：向上滚为正，向下滚为负（与引擎事件的YOffset一致）
         io.MouseWheel += e.GetYOffset();
+        // 水平滚轮：向右滚为正，向左滚为负（与引擎事件的XOffset一致）
         io.MouseWheelH += e.GetXOffset();
 
         return false;
@@ -154,7 +156,9 @@ namespace Hazel {
     bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& e)
     {
         ImGuiIO& io = ImGui::GetIO();
-        int keycode = e.GetKeyCode();
+        // 获取输入的Unicode字符
+        unsigned int keycode = e.GetKeyCode();
+        // 过滤不可见字符（如退格、回车，ImGui会通过KeysDown处理），只添加可显示字符
         if (keycode > 0 && keycode < 0x10000)
             io.AddInputCharacter((unsigned short)keycode);
         return false;

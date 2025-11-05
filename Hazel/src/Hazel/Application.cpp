@@ -3,6 +3,7 @@
 
 #include "Hazel/log.h"
 #include "Hazel/Layer.h"
+#include "Hazel/Input.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -57,19 +58,22 @@ namespace Hazel
         }
     }
 
-    void Application::Run()
-    {
-        while (m_Running)
-        {
-            // 背景颜色
-            glClearColor(1, 0, 1, 1);
+    void Application::Run() {
+        while (m_Running) { // 引擎主循环：持续运行直到窗口关闭
+            // 1. 清除屏幕缓冲区（设置背景色为紫色）
+            glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            // 更新每一层
-            for(Layer* layer : m_LayerStack)
+            // 2. 更新所有Layer层的逻辑（如游戏物体移动、UI刷新）
+            for (Layer* layer : m_LayerStack) {
                 layer->OnUpdate();
-            
-            // 更新窗口
+            }
+
+            // 3. 测试：全局查询鼠标位置并打印
+            auto [mouseX, mouseY] = Input::GetMousePosition();
+            HZ_CORE_TRACE("鼠标位置：X={0}, Y={1}", mouseX, mouseY);
+
+            // 4. 更新GLFW窗口（处理窗口事件、交换缓冲区）
             m_Window->OnUpdate();
         }
     }
