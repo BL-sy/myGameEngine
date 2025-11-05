@@ -7,6 +7,8 @@
 #include "Hazel/log.h"
 #include "Hazel/ImGui/ImGuiLayer.h"
 
+#include "Hazel/Input.h"
+
 // -----EntryPoint----------------------
 #include "Hazel/EntryPoint.h"
 // -------------------------------------

@@ -2,6 +2,9 @@
 #include "Hazel/Core.h"
 #include <utility> // ”√”⁄std::pair
 
+#include "KeyCodes.h"
+#include "MouseButtonCodes.h"
+
 namespace Hazel {
     class HAZEL_API Input {
     public:
