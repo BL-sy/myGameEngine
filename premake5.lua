@@ -13,6 +13,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 IncludeDir["ImGui"] = "Hazel/vendor/imgui"
+IncludeDir["glm"] = "Hazel/vendor/glm"
 
 -- 将GLFW premake5.lua包含进来,相当于把内容拷贝在这里面
 include "Hazel/vendor/GLFW"
@@ -39,7 +40,10 @@ project (EngineName)
 
     files {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        -- GLM的核心头文件（.hpp）和内联实现文件（.inl）
+        "%{prj.name}/vendor/glm/glm/**.hpp",
+        "%{prj.name}/vendor/glm/glm/**.inl"
     }
 
     -- 包含目录
@@ -51,7 +55,9 @@ project (EngineName)
         -- 链接头文件目录
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
-        "%{IncludeDir.ImGui}"
+        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}",
+
     }
     -- 链接库      
     links {
@@ -113,6 +119,7 @@ project "Sandbox"
         "Hazel/src",
         "Hazel",
         "Hazel/vendor",
+        "%{IncludeDir.glm}" 
     }
 
     links { "Hazel" }
