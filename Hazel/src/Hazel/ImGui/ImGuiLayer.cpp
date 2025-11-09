@@ -24,39 +24,37 @@ namespace Hazel {
 
 	void ImGuiLayer::OnAttach()
 	{
-		// Setup Dear ImGui context
+		// 初始化ImGui上下文
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+		ImGuiIO& io = ImGui::GetIO();
+		(void)io;
+		// 开启键盘控制
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		// 开启Docking特性
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		// 开启Viewports特性（多独立窗口）
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-		// Setup Dear ImGui style
+		//  配置样式：让跨平台窗口（如Windows原生窗口）与ImGui风格统一
 		ImGui::StyleColorsDark();
-		//ImGui::StyleColorsClassic();
-
-		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			style.WindowRounding = 0.0f;
-			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+			style.WindowRounding = 0.0f;          // 取消窗口圆角，匹配原生窗口
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f; // 确保窗口背景不透明
 		}
 
+		// 对接Hazel的GLFW窗口
 		Application& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
-
 		if (window == nullptr) {
 			HZ_CORE_ERROR("GLFW window is null - cannot initialize ImGui!");
 		}
 
-		// Setup Platform/Renderer bindings
+		// 初始化ImGui-GLFW后端（处理窗口大小、输入事件等）
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		// 初始化ImGui-OpenGL3后端（指定GLSL版本，需与Hazel渲染管线匹配）
 		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
@@ -69,34 +67,35 @@ namespace Hazel {
 
 	void ImGuiLayer::Begin()
 	{
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		ImGui_ImplOpenGL3_NewFrame();  // OpenGL后端新帧
+		ImGui_ImplGlfw_NewFrame();     // GLFW后端新帧
+		ImGui::NewFrame();             // ImGui核心新帧
 	}
 
 	void ImGuiLayer::End()
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
-		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+		// 设置ImGui渲染窗口大小（与Hazel主窗口一致）
+		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
 
-		// Rendering
+		// 1. 渲染ImGui绘制数据
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+		// 2. 处理跨平台Viewports（若开启）
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			GLFWwindow* backup_current_context = glfwGetCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backup_current_context);
+			GLFWwindow* backup_ctx = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();  // 更新原生窗口状态
+			ImGui::RenderPlatformWindowsDefault(); // 渲染原生窗口
+			glfwMakeContextCurrent(backup_ctx);   // 恢复Hazel的GL上下文
 		}
 	}
-
 	void ImGuiLayer::OnImGuiRender()
 	{
 		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+		ImGui::ShowDemoWindow(&show);// 显示ImGui官方Demo窗口
 	}
 
 }

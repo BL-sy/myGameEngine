@@ -19,8 +19,8 @@ namespace Hazel {
 		virtual void OnDetach() override;
 		virtual void OnImGuiRender() override;
 
-		void Begin();
-		void End();
+		void Begin();// 启动ImGui帧（在所有Layer的OnImGuiRender前调用）
+		void End();// 结束ImGui帧（在所有Layer的OnImGuiRender后调用）
 	private:
 		float m_Time = 0.0f;
 	};

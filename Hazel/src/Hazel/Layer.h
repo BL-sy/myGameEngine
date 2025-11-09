@@ -14,7 +14,8 @@ namespace Hazel {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}
-		virtual void OnImGuiRender() = 0;
+		// ImGui渲染函数，每层可独立实现UI
+		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
 		inline const std::string& GetName() const { return m_DebugName; }
