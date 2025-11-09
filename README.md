@@ -1,1 +1,2 @@
-# myGameEngine
+# Hazel
+Hazel Engine
