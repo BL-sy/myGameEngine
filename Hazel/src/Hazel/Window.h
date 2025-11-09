@@ -31,8 +31,8 @@ namespace Hazel {
 
 		virtual void OnUpdate() = 0;
 
-		virtual float GetWidth() const = 0;
-		virtual float GetHeight() const = 0;
+		virtual unsigned int GetWidth() const = 0;
+		virtual unsigned int GetHeight() const = 0;
 
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;

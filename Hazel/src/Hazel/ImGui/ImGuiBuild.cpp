@@ -1,6 +1,7 @@
-#include "hzpch.h"
-// Ö¸¶¨Ê¹ÓÃGLAD×÷ÎªOpenGL¼ÓÔØÆ÷£¬ĞèÈ·±£HazelÒÑ¼¯³ÉGLAD
+ï»¿#include "hzpch.h"
+
+// æŒ‡å®šä½¿ç”¨GLADä½œä¸ºOpenGLåŠ è½½å™¨ï¼Œéœ€ç¡®ä¿Hazelå·²é›†æˆGLAD
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
-// ÒıÈëImGui¹Ù·½GLFWºó¶Ë£¨´¦Àí´°¿ÚÊÂ¼ş£©ºÍOpenGL3ºó¶Ë£¨´¦ÀíäÖÈ¾£©
+// å¼•å…¥ImGuiå®˜æ–¹GLFWåç«¯ï¼ˆå¤„ç†çª—å£äº‹ä»¶ï¼‰å’ŒOpenGL3åç«¯ï¼ˆå¤„ç†æ¸²æŸ“ï¼‰
 #include "backends/imgui_impl_glfw.cpp"
 #include "backends/imgui_impl_opengl3.cpp"
