@@ -2,6 +2,7 @@
 #include "Shader.h"
 
 #include "glad./glad.h"
+#include "Buffer.h"
 
 Hazel::Shader::Shader(std::string& vertexSrc, std::string& fragmentSrc)
 {
@@ -120,3 +121,6 @@ void Hazel::Shader::UnBind()
 {
 	glUseProgram(0);
 }
+
+
+

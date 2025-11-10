@@ -35,25 +35,21 @@ namespace Hazel {
 		};
 
 		// 索引数据（复用顶点，按顺序绘制三角形）
-		unsigned int indices[3] = { 0, 1, 2 };
+		uint32_t indices[3] = { 0, 1, 2 };
 
 		// 创建VAO（管理顶点属性）
 		glGenVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
 
 		// 创建VBO（存储顶点数据）
-		glGenBuffers(1, &m_VertexBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);  // 静态数据（不频繁修改）
+		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 
 		// 配置顶点属性（位置属性：索引0，3个float，无归一化，步长3*float，偏移0）
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 
 		// 创建IBO（存储索引数据）
-		glGenBuffers(1, &m_IndexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)/sizeof(uint32_t)));
 
 		// 创建shader
 		// 顶点着色器src
@@ -125,7 +121,7 @@ namespace Hazel {
 			m_Shader->Bind();
 			// 渲染三角形（核心修改：绑定VAO+绘制）
 			glBindVertexArray(m_VertexArray);  // 绑定VAO（自动关联VBO、IBO和顶点属性）
-			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);  // 绘制三角形（3个索引）
+			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);  // 绘制三角形（3个索引）
 
 			// Layer更新+ImGui渲染（原有逻辑不变）
 			for (Layer* layer : m_LayerStack)
@@ -145,8 +141,6 @@ namespace Hazel {
 
 		// 程序退出时，释放OpenGL资源（新增）
 		glDeleteVertexArrays(1, &m_VertexArray);
-		glDeleteBuffers(1, &m_VertexBuffer);
-		glDeleteBuffers(1, &m_IndexBuffer);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
