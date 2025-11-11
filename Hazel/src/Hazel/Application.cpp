@@ -13,6 +13,24 @@ namespace Hazel {
 
 	Application* Application::s_Instance = nullptr;
 
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+	{
+		switch (type)
+		{
+		case ShaderDataType::Float:		return GL_FLOAT;
+		case ShaderDataType::Float2:	return GL_FLOAT;
+		case ShaderDataType::Float3:	return GL_FLOAT;
+		case ShaderDataType::Float4:	return GL_FLOAT;
+		case ShaderDataType::Mat3:		return GL_FLOAT;
+		case ShaderDataType::Mat4:		return GL_FLOAT;
+		case ShaderDataType::Int:		return GL_INT;
+		case ShaderDataType::Int2:		return GL_INT;
+		case ShaderDataType::Int3:		return GL_INT;
+		case ShaderDataType::Int4:		return GL_INT;
+		case ShaderDataType::Bool:		return GL_BOOL;
+		}
+	}
+
 	Application::Application()
 	{
 		HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -26,30 +44,43 @@ namespace Hazel {
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		// 渲染初始化：VAO、VBO、IBO
-		// 顶点数据（三角形三个顶点的三维坐标）
+		// 顶点数据
 		float vertices[3 * 3] = {
-			-0.5f, -0.5f, 0.0f,  // 顶点0：左下
-			 0.5f, -0.5f, 0.0f,  // 顶点1：右下
-			 0.0f,  0.5f, 0.0f   // 顶点2：上中
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			 0.0f,  0.5f, 0.0f
 		};
 
-		// 索引数据（复用顶点，按顺序绘制三角形）
+		// 索引数据
 		uint32_t indices[3] = { 0, 1, 2 };
 
-		// 创建VAO（管理顶点属性）
+		// 创建VAO（暂时保留OpenGL原生调用，后续抽象）
 		glGenVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
 
-		// 创建VBO（存储顶点数据）
+		// 通过抽象接口创建VBO
 		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 
-		// 配置顶点属性（位置属性：索引0，3个float，无归一化，步长3*float，偏移0）
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+		BufferLayout layout = {
+			{ ShaderDataType::Float3, "a_Position" },
+			 
+		};
 
-		// 创建IBO（存储索引数据）
-		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)/sizeof(uint32_t)));
+		uint32_t index = 0;
+		for (auto& element : layout)
+		{
+			// 暂时保留顶点属性配置（后续抽象）
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index, 
+				element.GetComponentCount(), 
+				ShaderDataTypeToOpenGLBaseType(element.Type), 
+				element.Normalized ? GL_TRUE : GL_FALSE, 
+				layout.GetStride(), 
+				(const void*)element.Offset);
+		}
+
+		// 通过抽象接口创建IBO
+		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));	
 
 		// 创建shader
 		// 顶点着色器src

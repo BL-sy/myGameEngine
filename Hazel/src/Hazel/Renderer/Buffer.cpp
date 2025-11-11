@@ -26,7 +26,7 @@ namespace Hazel {
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::None:		HZ_CORE_ASSERT(false, "None is now not suported!");
-		case RendererAPI::OpenGL:	return new OpenGLIndexBuffer(indices, size);
+		case RendererAPI::OpenGL:	return new OpenGLIndexBuffer(indices, size); // ’‚¿Ôsize «count
 		}
 
 		HZ_CORE_ASSERT(false, "Unknown RendererAPI!")
