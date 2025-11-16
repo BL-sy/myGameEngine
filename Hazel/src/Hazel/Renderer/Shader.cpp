@@ -1,10 +1,10 @@
 #include "hzpch.h"
 #include "Shader.h"
 
-#include "glad./glad.h"
+#include <glad/glad.h>
 #include "Buffer.h"
 
-Hazel::Shader::Shader(std::string& vertexSrc, std::string& fragmentSrc)
+Hazel::Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
 {
 	// Create an empty vertex shader handle
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);

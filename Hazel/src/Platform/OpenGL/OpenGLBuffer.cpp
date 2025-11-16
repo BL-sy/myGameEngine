@@ -21,6 +21,11 @@ namespace Hazel {
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
+	void OpenGLVertexBuffer::SetLayout(BufferLayout& layout)
+	{
+		m_Layout = layout;
+	}
+
 	void OpenGLVertexBuffer::Bind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER,m_RendererID);
@@ -30,6 +35,7 @@ namespace Hazel {
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
+
 
 	/////////////////////////////////////////////////////////////////////
 	//Index Buffer///////////////////////////////////////////////////////

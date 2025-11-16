@@ -6,7 +6,7 @@ namespace Hazel {
 	class Shader
 	{
 	public:
-		Shader(std::string& vertexSrc, std::string& fragmentSrc);
+		Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
 		~Shader();
 
 		void Bind();
