@@ -12,8 +12,8 @@ namespace Hazel {
 		// 决定使用哪个API，实例化的类型
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:		HZ_CORE_ASSERT(false, "None is now not suported!");
-			case RendererAPI::OpenGL:	return new OpenGLVertexBuffer(vertices, size);
+			case RendererAPI::APIType::None:		HZ_CORE_ASSERT(false, "None is now not suported!");
+			case RendererAPI::APIType::OpenGL:	return new OpenGLVertexBuffer(vertices, size);
 		}
 
 		HZ_CORE_ASSERT(false, "Unknown RendererAPI!")
@@ -25,8 +25,8 @@ namespace Hazel {
 		// 决定使用哪个API，实例化的类型
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None:		HZ_CORE_ASSERT(false, "None is now not suported!");
-		case RendererAPI::OpenGL:	return new OpenGLIndexBuffer(indices, size); // 这里size是count
+		case RendererAPI::APIType::None:		HZ_CORE_ASSERT(false, "None is now not suported!");
+		case RendererAPI::APIType::OpenGL:	return new OpenGLIndexBuffer(indices, size); // 这里size是count
 		}
 
 		HZ_CORE_ASSERT(false, "Unknown RendererAPI!")

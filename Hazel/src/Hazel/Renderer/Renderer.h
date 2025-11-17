@@ -1,17 +1,20 @@
 #pragma once
 
+#include "VertexArray.h"
+#include "RenderCommand.h"
+
 namespace Hazel {
 
-	enum class RendererAPI
-	{
-		None = 0, OpenGL = 1
-	};
+    class Renderer 
+    {
+    public:
+        static void BeginScene() {} // 预留接口，后续扩展环境设置
+        static void EndScene() {}   // 预留接口，后续扩展优化
+        static void Submit(const std::shared_ptr<VertexArray>& va);
 
-	class Renderer
-	{
-	public:
-		inline static RendererAPI GetAPI() { return s_RendererAPI; }
-	private:
-		static RendererAPI s_RendererAPI;
-	};
+        // 复用RendererAPI的API类型查询
+        inline static RendererAPI::APIType GetAPI() {
+            return RendererAPI::GetAPIType();
+        }
+    };
 }

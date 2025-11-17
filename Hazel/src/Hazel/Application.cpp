@@ -3,7 +3,7 @@
 
 #include "Hazel/Log.h"
 
-#include <glad/glad.h>
+#include "Hazel/Renderer/Renderer.h"
 
 
 namespace Hazel {
@@ -177,33 +177,32 @@ namespace Hazel {
 	{
 		while (m_Running)
 		{
-			// 清屏（原有逻辑不变）
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			// 1. 抽象清屏命令
+			RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f));
+			RenderCommand::Clear();
 
+			// 2. 渲染流程（预留Begin/EndScene，当前简化提交）
+			Renderer::BeginScene();
+
+			// 提交第一个物体
 			m_BlueShader->Bind();
-			m_SqrVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SqrVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_SqrVA);
 
-			// 每帧绑定着色器
+			// 提交第二个物体
 			m_Shader->Bind();
-			// 渲染三角形（核心修改：绑定VAO+绘制）
-			m_VertexArray->Bind(); // 绑定VAO（自动关联VBO、IBO和顶点属性）
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);  // 绘制三角形（3个索引）
+			Renderer::Submit(m_VertexArray);
 
-			// Layer更新+ImGui渲染（原有逻辑不变）
+			Renderer::EndScene();
+
+			// 3. Layer更新与ImGui渲染（原有逻辑不变）
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
-			if (m_ImGuiLayer)
-			{
-				m_ImGuiLayer->Begin();
-				for (Layer* layer : m_LayerStack)
-					layer->OnImGuiRender();
-				m_ImGuiLayer->End();
-			}
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
+			m_ImGuiLayer->End();
 
-			// 交换缓冲区（原有逻辑不变）
 			m_Window->OnUpdate();
 		}
 

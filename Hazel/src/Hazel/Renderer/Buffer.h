@@ -37,7 +37,7 @@ namespace Hazel {
 		uint32_t Offset;        // 属性在顶点数据中的偏移量（字节，自动计算）
 		bool Normalized;        // 是否归一化（仅整型数据有效，将0~255映射为0.0~1.0）
 
-		BufferElement() {};
+		//BufferElement() {};
 		BufferElement(ShaderDataType type, const std::string name, bool normalized = false)
 			:Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
 		{
