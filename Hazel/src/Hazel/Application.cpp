@@ -13,6 +13,7 @@ namespace Hazel {
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()
+		:m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		HZ_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
@@ -47,7 +48,7 @@ namespace Hazel {
 		std::shared_ptr<IndexBuffer> indexBuffer;
 		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-		// 3. 创建VAO并关联VBO、IBO（核心修改：纯抽象接口）
+		// 3. 创建VAO并关联VBO、IBO
 		m_VertexArray.reset(VertexArray::Create());
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		m_VertexArray->SetIndexBuffer(indexBuffer);
@@ -75,7 +76,7 @@ namespace Hazel {
 		std::shared_ptr<IndexBuffer> squareIB;
 		squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 
-		// 3. 创建VAO并关联VBO、IBO（核心修改：纯抽象接口）
+		// 3. 创建VAO并关联VBO、IBO
 		m_SqrVA.reset(VertexArray::Create());
 		m_SqrVA->AddVertexBuffer(squareVB);
 		m_SqrVA->SetIndexBuffer(squareIB);
@@ -88,11 +89,13 @@ namespace Hazel {
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 
+			uniform mat4 u_ViewProjection;
+
 			out vec3 v_Position;
 			out vec4 v_Color;
 
 			void main(){
-				gl_Position = vec4(a_Position, 1.0f);
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0f);
 				v_Position = a_Position;
 				v_Color = a_Color;
 			}
@@ -122,10 +125,12 @@ namespace Hazel {
 
 			layout(location = 0) in vec3 a_Position;
 
+			uniform mat4 u_ViewProjection;
+
 			out vec3 v_Position;
 
 			void main(){
-				gl_Position = vec4(a_Position, 1.0f);
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0f);
 				v_Position = a_Position;
 			}
 		)";
@@ -172,7 +177,7 @@ namespace Hazel {
 		}
 	}
 
-	// 主循环（用户原有代码）
+	// 主循环
 	void Application::Run()
 	{
 		while (m_Running)
@@ -181,20 +186,21 @@ namespace Hazel {
 			RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.2f, 1.0f));
 			RenderCommand::Clear();
 
-			// 2. 渲染流程（预留Begin/EndScene，当前简化提交）
-			Renderer::BeginScene();
+			// set camera position before begin scene so matrix reflects new position
+			m_Camera.SetPosition({ 0.5f, 0.5f, 0.5f });
+
+			// 2. 渲染流程
+			Renderer::BeginScene(m_Camera);
 
 			// 提交第一个物体
-			m_BlueShader->Bind();
-			Renderer::Submit(m_SqrVA);
+			Renderer::Submit(m_BlueShader, m_SqrVA);
 
 			// 提交第二个物体
-			m_Shader->Bind();
-			Renderer::Submit(m_VertexArray);
+			Renderer::Submit(m_Shader, m_VertexArray);
 
 			Renderer::EndScene();
 
-			// 3. Layer更新与ImGui渲染（原有逻辑不变）
+			// 3. Layer更新与ImGui渲染
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
@@ -206,7 +212,7 @@ namespace Hazel {
 			m_Window->OnUpdate();
 		}
 
-		// 程序退出时，释放OpenGL资源（新增）
+		// 程序退出时，释放OpenGL资源
 		m_VertexArray->Unbind();
 	}
 
