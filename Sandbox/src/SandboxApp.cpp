@@ -40,10 +40,10 @@ public:
 		// 渲染初始化：VAO、VBO、IBO
 		// 顶点数据与布局
 		float squareVertices[3 * 4] = {
-			-0.75f, -0.75f, 0.0f,
-			 0.75f, -0.75f, 0.0f,
-			 0.75f,  0.75f, 0.0f,
-			-0.75f,  0.75f, 0.0f
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			 0.5f,  0.5f, 0.0f,
+			-0.5f,  0.5f, 0.0f
 		};
 		Hazel::BufferLayout squareVBLayout = {
 			{Hazel::ShaderDataType::Float3, "a_Pos"}
@@ -172,12 +172,21 @@ public:
 		Hazel::Renderer::BeginScene(m_Camera);
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
 		// 提交第一个物体
-		Hazel::Renderer::Submit(m_BlueShader, m_SquareVA, transform);
+		for(int i = 0;i < 5;i++)
+		{
+			for(int j = 0;j < 5;j++)
+			{
+				glm::vec3 pos = glm::vec3(i * 0.11f, j * 0.11f, 0.0f);
+				glm::mat4 squareTransform = glm::translate(transform, pos) * scale;
+				Hazel::Renderer::Submit(m_BlueShader, m_SquareVA, squareTransform);
+			}
+		}
 
 		// 提交第二个物体
-		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		// Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 
 		Hazel::Renderer::EndScene();
 
