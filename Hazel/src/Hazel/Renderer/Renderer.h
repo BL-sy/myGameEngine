@@ -16,7 +16,7 @@ namespace Hazel {
         // 结束场景：预留优化接口（批处理/排序）
         static void EndScene();
         // 提交渲染：绑定Shader/VA，上传矩阵并绘制
-        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray);
+        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
 
         // 查询当前渲染API类型
         inline static RendererAPI::APIType GetAPI() { return RendererAPI::GetAPIType(); }

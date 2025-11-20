@@ -1,11 +1,13 @@
 #include <Hazel.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 
 class ExampleLayer : public Hazel::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f)
+		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f), m_SquarePosition(0.0f)
 	{
 		// 渲染初始化：VAO、VBO、IBO
 		// 顶点数据与布局
@@ -107,11 +109,12 @@ public:
 			layout(location = 0) in vec3 a_Position;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			out vec3 v_Position;
 
 			void main(){
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0f);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0f);
 				v_Position = a_Position;
 			}
 		)";
@@ -148,6 +151,16 @@ public:
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_E))
 			m_CameraRotation -= m_CameraRotationSpeed * ts;
 
+		if (Hazel::Input::IsKeyPressed(HZ_KEY_A))
+			m_SquarePosition.x -= m_SquareMoveSpeed * ts;
+		else if (Hazel::Input::IsKeyPressed(HZ_KEY_D))
+			m_SquarePosition.x += m_SquareMoveSpeed * ts;
+
+		if (Hazel::Input::IsKeyPressed(HZ_KEY_W))
+			m_SquarePosition.y += m_SquareMoveSpeed * ts;
+		else if (Hazel::Input::IsKeyPressed(HZ_KEY_S))
+			m_SquarePosition.y -= m_SquareMoveSpeed * ts;
+
 		// 1. 抽象清屏命令
 		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Hazel::RenderCommand::Clear();
@@ -158,8 +171,10 @@ public:
 		// 2. 渲染流程
 		Hazel::Renderer::BeginScene(m_Camera);
 
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
+
 		// 提交第一个物体
-		Hazel::Renderer::Submit(m_BlueShader, m_SquareVA);
+		Hazel::Renderer::Submit(m_BlueShader, m_SquareVA, transform);
 
 		// 提交第二个物体
 		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
@@ -189,6 +204,8 @@ private:
 	float m_CameraRotation = 0.0f;
 	float m_CameraRotationSpeed = 180.0f;
 
+	glm::vec3 m_SquarePosition;
+	float m_SquareMoveSpeed = 1.0f;
 };
 
 class Sandbox : public Hazel::Application
