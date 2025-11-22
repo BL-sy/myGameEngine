@@ -1,6 +1,8 @@
 #include "hzpch.h"
 #include "Renderer.h"
 
+#include "Platform/OpenGL/OpenGLShader.h"
+
 namespace Hazel {
 
     Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
@@ -19,8 +21,9 @@ namespace Hazel {
     {
         shader->Bind();
         // 上传VP矩阵到Shader的uniform变量（所有物体共享）
-        shader->UploadUniformMat4("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
-        shader->UploadUniformMat4("u_Transform", transform);
+        // 动态转换到OpenGLShader，调用平台相关的Uniform上传方法
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4("u_Transform", transform);
 
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray); // 执行绘制命令
