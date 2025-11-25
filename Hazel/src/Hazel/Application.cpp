@@ -18,7 +18,7 @@ namespace Hazel {
 		s_Instance = this;
 
 		// 创建窗口
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = Scope<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 		// 创建ImGuiLayer

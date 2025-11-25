@@ -11,7 +11,7 @@ namespace Hazel {
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::APIType::None:		HZ_CORE_ASSERT(false, "None is now not suported!");
-			case RendererAPI::APIType::OpenGL:	return new OpenGLVertexArray(); // 这里size是count
+			case RendererAPI::APIType::OpenGL:		return new OpenGLVertexArray(); // 这里size是count
 		}
 
 		HZ_CORE_ASSERT(false, "Unknown RendererAPI!")

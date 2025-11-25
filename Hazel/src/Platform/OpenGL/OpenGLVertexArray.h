@@ -15,17 +15,17 @@ namespace Hazel {
         virtual void Bind() const override;
         virtual void Unbind() const override;
 
-        virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) override;
-        virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) override;
+        virtual void AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) override;
+        virtual void SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) override;
 
-        virtual const std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; };
-        virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; };
+        virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; };
+        virtual const Ref<IndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; };
 
     private:
         uint32_t m_RendererID = 0; // OpenGL VAO对象ID
 
-        std::vector<std::shared_ptr<VertexBuffer>> m_VertexBuffers; // 关联的VBO列表
-        std::shared_ptr<IndexBuffer> m_IndexBuffer; // 关联的IBO
+        std::vector<Ref<VertexBuffer>> m_VertexBuffers; // 关联的VBO列表
+        Ref<IndexBuffer> m_IndexBuffer; // 关联的IBO
         uint32_t m_VertexAttribIndex = 0; // 顶点属性索引（自动递增，避免手动管理）
     };
 }

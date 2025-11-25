@@ -5,6 +5,6 @@
 
 namespace Hazel {
 
-    // RenderCommand.cpp 初始化
-    std::unique_ptr<RendererAPI> RenderCommand::s_RendererAPI = std::make_unique<OpenGLRendererAPI>();
+	// RenderCommand.cpp 初始化
+	Scope<RendererAPI> RenderCommand::s_RendererAPI = CreateScope<OpenGLRendererAPI>();
 }
