@@ -206,8 +206,8 @@ public:
 			m_SquarePosition.y -= m_SquareMoveSpeed * ts;
 
 		// 1. ≥ÈœÛ«Â∆¡√¸¡Ó
-		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Hazel::RenderCommand::Clear();
+		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 
 		m_Camera.SetPosition(m_CameraPosition);
 		m_Camera.SetRotation(m_CameraRotation);

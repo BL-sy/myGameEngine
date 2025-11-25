@@ -1,7 +1,8 @@
 #include "hzpch.h"
 #include "Application.h"
 
-#include "Hazel/Log.h"
+//#include "Hazel/Log.h"
+#include "Hazel/Renderer/Renderer.h"
 #include "Hazel/Core/Timestep.h"
 
 #include <glfw/glfw3.h>
@@ -20,6 +21,9 @@ namespace Hazel {
 		// 创建窗口
 		m_Window = Scope<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
+		// 初始化渲染器
+		Renderer::Init();
 
 		// 创建ImGuiLayer
 		m_ImGuiLayer = new ImGuiLayer();

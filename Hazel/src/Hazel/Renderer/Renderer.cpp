@@ -7,6 +7,11 @@ namespace Hazel {
 
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
 
+	void Renderer::Init()
+	{
+		RenderCommand::Init();
+	}
+
 	void Renderer::BeginScene(const OrthographicCamera& camera)
 	{
 		// 缓存相机预计算的VP矩阵，避免每帧多次获取

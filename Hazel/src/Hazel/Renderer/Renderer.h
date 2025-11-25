@@ -11,6 +11,8 @@ namespace Hazel {
 	class Renderer
 	{
 	public:
+		// 渲染器初始化
+		static void Init();
 		// 开始场景：缓存相机VP矩阵（全局共享）
 		static void BeginScene(const OrthographicCamera& camera);
 		// 结束场景：预留优化接口（批处理/排序）
