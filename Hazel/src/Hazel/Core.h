@@ -38,6 +38,6 @@ namespace Hazel {
 	template<typename T> using Ref = std::shared_ptr<T>;   // 封装共享指针
 
 	// 辅助创建函数
-	template<typename T, typename... Args> constexpr Ref<T> CreateRef(Args&&... args) { return std::make_shared<T>(std::forward<Args>(args)); }
-	template<typename T, typename... Args> constexpr Scope<T> CreateScope(Args&&... args) { return std::make_unique<T>(std::forward<Args>(args)); }
+	template<typename T, typename... Args> constexpr Ref<T> CreateRef() { return std::make_shared<T>(); }
+	template<typename T, typename... Args> constexpr Scope<T> CreateScope() { return std::make_unique<T>(); }
 }

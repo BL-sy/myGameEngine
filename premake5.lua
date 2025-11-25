@@ -73,7 +73,7 @@ project "Hazel"
 
     buildoptions
     {
-        "/utf-8"
+        "/execution-charset:utf-8"
     }
 
     filter "system:windows"
@@ -132,7 +132,7 @@ project "Sandbox"
 
     buildoptions
     {
-        "/utf-8"
+        "/execution-charset:utf-8"
     }
 
 
