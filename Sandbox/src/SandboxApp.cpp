@@ -10,7 +10,7 @@ class ExampleLayer : public Hazel::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f), m_SquarePosition(0.0f)
+		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		// 渲染初始化：VAO、VBO、IBO
 		// 顶点数据与布局
@@ -39,17 +39,18 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		// blue
+		// Square
 		// 渲染初始化：VAO、VBO、IBO
 		// 顶点数据与布局
-		float squareVertices[3 * 4] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
+		float squareVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 		Hazel::BufferLayout squareVBLayout = {
-			{Hazel::ShaderDataType::Float3, "a_Pos"}
+			{Hazel::ShaderDataType::Float3, "a_Pos"},
+			{Hazel::ShaderDataType::Float2, "a_TexCoord"}
 		};
 
 		// 1. 创建VBO并设置布局
@@ -101,7 +102,6 @@ public:
 			}
 		)";
 
-		// Instantiate the main shader to avoid null dereference later in Run()
 		m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
 
 		// 创建shader2
@@ -137,6 +137,45 @@ public:
 		)";
 
 		m_FlatColorShader.reset(Hazel::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+		
+		// 创建texture_shader
+		// 顶点着色器src
+		std::string textureShaderVertexSrc = R"(
+			#version 330 core
+
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
+			out vec2 v_TexCoord;
+
+			void main(){
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0f);
+				v_TexCoord = a_TexCoord;
+			}
+		)";
+		// 片段着色器
+		std::string textureShaderFragmentSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+
+			void main(){
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+
+		m_TextureShader.reset(Hazel::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
+
+		m_Texture = Hazel::Texture2D::Create("assets/textures/asuka.png");
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Hazel::Timestep ts) override
@@ -178,19 +217,15 @@ public:
 
 		// 渲染一组正方形
 		// 设置这一组正方形的颜色，通过imgui来设置
-		// 强转////////////////////////////////////////////////////////////////////
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
-
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
-		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColorShader)->Bind();
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
-
+		
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 		// 提交第一个物体
-		for(int i = 0;i < 5;i++)
+		for(int i = 0;i < 10;i++)
 		{
-			for(int j = 0;j < 5;j++)
+			for(int j = 0;j < 10;j++)
 			{
 				glm::vec3 pos = glm::vec3(i * 0.11f, j * 0.11f, 0.0f);
 				glm::mat4 squareTransform = glm::translate(transform, pos) * scale;
@@ -198,11 +233,14 @@ public:
 			}
 		}
 
-		// 提交第二个物体
-		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		m_Texture->Bind(0);
+		// 渲染一个正方形
+		Hazel::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(0.65f)));
+
+		// 三角形
+		// Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 
 		Hazel::Renderer::EndScene();
-
 	}
 
 	// 颜色选择器////////////////////////////////////////////////////////
@@ -214,21 +252,23 @@ public:
 	}
 
 private:
+	Hazel::Ref<Hazel::Shader> m_Shader;
+	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
+
+	Hazel::Ref<Hazel::Shader> m_FlatColorShader, m_TextureShader;
+	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
+
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
+
 	Hazel::OrthographicCamera m_Camera;
-	glm::vec3 m_CameraPosition;
+	glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
 	float m_CameraMoveSpeed = 5.0f;
 
 	float m_CameraRotation = 0.0f;
 	float m_CameraRotationSpeed = 180.0f;
 
-	Hazel::Ref<Hazel::Shader> m_Shader;
-	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
-
-	Hazel::Ref<Hazel::Shader> m_FlatColorShader;
-	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
-
-	glm::vec3 m_SquareColor = { 0.2f, 0.3f, 0.8f };
-	glm::vec3 m_SquarePosition;
+	glm::vec3 m_SquareColor = { 0.6f, 0.3f, 0.8f };
+	glm::vec3 m_SquarePosition = { 0.3f, 0.3f, 0.0f };
 	float m_SquareMoveSpeed = 1.0f;
 
 };
