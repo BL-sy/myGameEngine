@@ -4,12 +4,16 @@
 #include <string>
 #include <glm/glm.hpp>
 
+// TODO: REMOVE!
+typedef unsigned int GLenum;
+
 namespace Hazel {
 
 	class OpenGLShader : public Shader
 	{
 	public:
-		OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+		OpenGLShader(const std::string& filepath);// 文件路径构造函数
+		OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);// 源代码构造函数
 		virtual ~OpenGLShader();
 
 		virtual void Bind() const override;
@@ -25,6 +29,10 @@ namespace Hazel {
 		void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
 		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
 
+	private:
+		std::string ReadFile(const std::string& filepath);// 字符串转 OpenGL Shader 类型
+		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);// 预处理函数
+		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);// 编译函数
 	private:
 		uint32_t m_RendererID = 0;
 	};
