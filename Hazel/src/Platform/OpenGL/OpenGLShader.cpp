@@ -23,9 +23,19 @@ namespace Hazel {
 		std::string source = ReadFile(filepath); // 1. 读文件内容到字符串
 		auto shaderSources = PreProcess(source); // 2. 拆分顶点/片段源码
 		Compile(shaderSources); // 3. 编译+链接
+
+		// 从文件路径中提取Shader名称	
+		// /assets/shaders/Texture.glsl -> Texture
+		auto lastSlash = filepath.find_last_of("/\\"); // 找最后一个斜杠
+		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+		auto lastPoint = filepath.rfind('.'); // 找最后一个点
+
+		auto count = lastPoint == std::string::npos ? filepath.size() - lastSlash : lastPoint - lastSlash;
+		m_Name = filepath.substr(lastSlash, count);
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+		:m_Name(name)
 	{
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
@@ -36,7 +46,7 @@ namespace Hazel {
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
 		std::string result;
-		std::ifstream in(filepath, std::ios::in, std::ios::binary);// 二进制模式读
+		std::ifstream in(filepath, std::ios::in | std::ios::binary);// 二进制模式读
 		if (in)
 		{
 			in.seekg(0, std::ios::end); // 光标移到文件末尾

@@ -1,6 +1,5 @@
 #pragma once
 
-#pragma once
 
 #ifdef HZ_PLATFORM_WINDOWS
 	#if HZ_DYNAMIC_LINK
