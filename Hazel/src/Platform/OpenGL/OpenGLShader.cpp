@@ -84,8 +84,10 @@ namespace Hazel {
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		GLuint program = glCreateProgram(); // 创建OpenGL程序对象（最终的Shader程序）
-		std::vector<GLenum> glShaderIDs(shaderSources.size()); // 存储每个Shader的ID（用于后续删除）
+		std::array<GLenum, 2> glShaderIDs; // 存储每个Shader的ID（用于后续删除）
+		HZ_CORE_ASSERT(shaderSources.size() <= 2, "Only supports 2 shaders for now");
 
+		int shaderIndex = 0;
 		// 遍历哈希表，编译每个Shader（顶点+片段）
 		for (auto& kv : shaderSources)
 		{
@@ -113,7 +115,7 @@ namespace Hazel {
 			}
 
 			glAttachShader(program, shader); // 把编译好的Shader附加到程序对象上
-			glShaderIDs.push_back(shader); // 记录Shader ID，后续用于删除
+			glShaderIDs[shaderIndex++] = shader; // 记录Shader ID，后续用于删除
 		}
 
 		m_RendererID = program; // 保存程序对象ID（后续Bind/UnBind用）
