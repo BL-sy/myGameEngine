@@ -12,6 +12,11 @@ namespace Hazel {
 		RenderCommand::Init();
 	}
 
+	void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+	{
+		RenderCommand::SetViewport(0, 0, width, height);
+	}
+
 	void Renderer::BeginScene(const OrthographicCamera& camera)
 	{
 		// 缓存相机预计算的VP矩阵，避免每帧多次获取

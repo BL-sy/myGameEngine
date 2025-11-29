@@ -29,11 +29,19 @@ namespace Hazel {
 				m_CameraRotation += m_CameraRotationSpeed * ts;
 			if (Hazel::Input::IsKeyPressed(HZ_KEY_E))
 				m_CameraRotation -= m_CameraRotationSpeed * ts;
-			if (Hazel::Input::IsKeyPressed(HZ_KEY_R))
-				m_CameraRotation = 0;
 
 			m_Camera.SetRotation(m_CameraRotation);
 		}
+
+		// 重置相机（测试）
+		if (Hazel::Input::IsKeyPressed(HZ_KEY_R))
+		{
+			m_CameraRotation = 0;
+			m_CameraPosition = glm::vec3(0.0f);
+			m_ZoomLevel = 1.0f;
+			m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		}	
+
 		m_Camera.SetPosition(m_CameraPosition);
 		m_CameraTranslationSpeed = m_ZoomLevel; // 根据缩放等级调整移动速度
 	}
