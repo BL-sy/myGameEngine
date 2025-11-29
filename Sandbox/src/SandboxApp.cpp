@@ -10,7 +10,7 @@ class ExampleLayer : public Hazel::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
+		: Layer("Example"), m_CameraController( 1920.0f / 1080.0f, true)
 	{
 		// 渲染初始化：VAO、VBO、IBO
 		// 顶点数据与布局
@@ -148,40 +148,26 @@ public:
 
 	void OnUpdate(Hazel::Timestep ts) override
 	{
+		// Update
+		m_CameraController.OnUpdate(ts);
+
+		// Render
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT))
-			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
+			m_SquarePosition.x -= m_CameraMoveSpeed * ts;
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT))
-			m_CameraPosition.x += m_CameraMoveSpeed * ts;
+			m_SquarePosition.x += m_CameraMoveSpeed * ts;
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_UP))
-			m_CameraPosition.y += m_CameraMoveSpeed * ts;
+			m_SquarePosition.y += m_CameraMoveSpeed * ts;
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN))
-			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_Q))
-			m_CameraRotation += m_CameraRotationSpeed * ts;
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_E))
-			m_CameraRotation -= m_CameraRotationSpeed * ts;
-
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_A))
-			m_SquarePosition.x -= m_SquareMoveSpeed * ts;
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_D))
-			m_SquarePosition.x += m_SquareMoveSpeed * ts;
-
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_W))
-			m_SquarePosition.y += m_SquareMoveSpeed * ts;
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_S))
-			m_SquarePosition.y -= m_SquareMoveSpeed * ts;
+			m_SquarePosition.y -= m_CameraMoveSpeed * ts;
 
 		// 1. 抽象清屏命令
 		Hazel::RenderCommand::Clear();
 		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 
-		m_Camera.SetPosition(m_CameraPosition);
-		m_Camera.SetRotation(m_CameraRotation);
-
 		// 2. 渲染流程
-		Hazel::Renderer::BeginScene(m_Camera);
+		Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		// 渲染一组正方形
 		// 设置这一组正方形的颜色，通过imgui来设置
@@ -207,17 +193,22 @@ public:
 		Hazel::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(0.65f)));
 
 		// 三角形
-		// Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 
 		Hazel::Renderer::EndScene();
 	}
 
 	// 颜色选择器////////////////////////////////////////////////////////
-	virtual void OnImGuiRender()override 
+	virtual void OnImGuiRender() override 
 	{
 		ImGui::Begin("Settings");
 		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
 		ImGui::End();
+	}
+
+	virtual void OnEvent(Hazel::Event& e) override
+	{
+		m_CameraController.OnEvent(e);
 	}
 
 private:
@@ -231,7 +222,7 @@ private:
 
 	Hazel::Ref<Hazel::Texture2D> m_Texture;
 
-	Hazel::OrthographicCamera m_Camera;
+	Hazel::OrthographicCameraController m_CameraController;
 	glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
 	float m_CameraMoveSpeed = 5.0f;
 
