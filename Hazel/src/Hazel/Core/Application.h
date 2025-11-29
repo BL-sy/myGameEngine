@@ -4,7 +4,7 @@
 
 #include "Hazel/Events/ApplicationEvent.h"
 
-#include "Hazel/LayerStack.h"
+#include "Hazel/Core/LayerStack.h"
 #include "Hazel/ImGui/ImGuiLayer.h"
 
 

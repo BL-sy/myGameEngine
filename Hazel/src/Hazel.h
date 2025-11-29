@@ -2,16 +2,16 @@
 
 #pragma once
 // 核心基础
-#include "Hazel/Application.h"
-#include "Hazel/Layer.h"
-#include "Hazel/Log.h"
+#include "Hazel/Core/Application.h"
+#include "Hazel/Core/Layer.h"
+#include "Hazel/Core/Log.h"
 #include "Hazel/Core/Timestep.h"
-#include "Hazel/OrthographicCameraController.h"
+#include "Hazel/Renderer/OrthographicCameraController.h"
 
 // 输入相关
-#include "Hazel/Input.h"
-#include "Hazel/KeyCodes.h"
-#include "Hazel/MouseButtonCodes.h"
+#include "Hazel/Core/Input.h"
+#include "Hazel/Core/KeyCodes.h"
+#include "Hazel/Core/MouseButtonCodes.h"
 
 // ImGui
 #include "Hazel/ImGui/ImGuiLayer.h"
@@ -26,4 +26,4 @@
 #include "Hazel/Renderer/OrthographicCamera.h"
 
 // 入口回调
-#include "Hazel/EntryPoint.h"
+#include "Hazel/Core/EntryPoint.h"

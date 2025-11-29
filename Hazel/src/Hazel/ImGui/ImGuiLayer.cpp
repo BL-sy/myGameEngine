@@ -5,7 +5,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-#include "Hazel/Application.h"
+#include "Hazel/Core/Application.h"
 
 // TEMPORARY
 #include <GLFW/glfw3.h>
@@ -76,7 +76,7 @@ namespace Hazel {
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		// 设置ImGui渲染窗口大小（与Hazel主窗口一致）
-		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+		io.DisplaySize = ImVec2(static_cast<float>(app.GetWindow().GetWidth()), static_cast<float>(app.GetWindow().GetHeight()));
 
 		// 1. 渲染ImGui绘制数据
 		ImGui::Render();

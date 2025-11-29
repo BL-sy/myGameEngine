@@ -71,7 +71,8 @@ namespace Hazel {
 				ShaderDataTypeToOpenGLBaseType(element.Type), // OpenGL数据类型
 				element.Normalized ? GL_TRUE : GL_FALSE, // 是否归一化
 				layout.GetStride(), // 顶点步长（单个顶点总字节数）
-				(const void*)element.Offset // 属性偏移量
+				// 安全转换：uint32_t → std::uintptr_t → const void*
+				reinterpret_cast<const void*>(static_cast<std::uintptr_t>(element.Offset)) // 属性偏移量
 			);
 			m_VertexAttribIndex++;
 		}
