@@ -1,10 +1,13 @@
 #include <Hazel.h>
+#include <Hazel/Core/EntryPoint.h>
 
 #include "Platform/OpenGL/OpenGLShader.h"
 
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "Sandbox2D.h"
 
 class ExampleLayer : public Hazel::Layer
 {
@@ -26,16 +29,16 @@ public:
 
 		// 1. 创建VBO并设置布局
 		Hazel::Ref<Hazel::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
+		vertexBuffer = Hazel::VertexBuffer::Create(vertices, sizeof(vertices));
 		vertexBuffer->SetLayout(layout);
 
 		// 2. 创建IBO
 		uint32_t indices[3] = { 0, 1, 2 };
 		Hazel::Ref<Hazel::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		indexBuffer = Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
 		// 3. 创建VAO并关联VBO、IBO
-		m_VertexArray.reset(Hazel::VertexArray::Create());
+		m_VertexArray = Hazel::VertexArray::Create();
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -55,16 +58,16 @@ public:
 
 		// 1. 创建VBO并设置布局
 		Hazel::Ref<Hazel::VertexBuffer> squareVB;
-		squareVB.reset(Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		squareVB = Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		squareVB->SetLayout(squareVBLayout);
 
 		// 2. 创建IBO
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 		Hazel::Ref<Hazel::IndexBuffer> squareIB;
-		squareIB.reset(Hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		squareIB = Hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
 		// 3. 创建VAO并关联VBO、IBO
-		m_SquareVA.reset(Hazel::VertexArray::Create());
+		m_SquareVA = Hazel::VertexArray::Create();
 		m_SquareVA->AddVertexBuffer(squareVB);
 		m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -153,14 +156,14 @@ public:
 
 		// Render
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT))
-			m_SquarePosition.x -= m_CameraMoveSpeed * ts;
+			m_SquarePosition.x -= m_SquareMoveSpeed * ts;
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT))
-			m_SquarePosition.x += m_CameraMoveSpeed * ts;
+			m_SquarePosition.x += m_SquareMoveSpeed * ts;
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_UP))
-			m_SquarePosition.y += m_CameraMoveSpeed * ts;
+			m_SquarePosition.y += m_SquareMoveSpeed * ts;
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN))
-			m_SquarePosition.y -= m_CameraMoveSpeed * ts;
+			m_SquarePosition.y -= m_SquareMoveSpeed * ts;
 
 		// 1. 抽象清屏命令
 		Hazel::RenderCommand::Clear();
@@ -223,11 +226,6 @@ private:
 	Hazel::Ref<Hazel::Texture2D> m_Texture;
 
 	Hazel::OrthographicCameraController m_CameraController;
-	glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
-	float m_CameraMoveSpeed = 5.0f;
-
-	float m_CameraRotation = 0.0f;
-	float m_CameraRotationSpeed = 180.0f;
 
 	glm::vec3 m_SquareColor = { 0.6f, 0.3f, 0.8f };
 	glm::vec3 m_SquarePosition = { 0.3f, 0.3f, 0.0f };
@@ -240,7 +238,8 @@ class Sandbox : public Hazel::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
 	}
 
 	~Sandbox()

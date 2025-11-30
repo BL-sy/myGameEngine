@@ -21,7 +21,7 @@ namespace Hazel {
 		// 注意这个Create函数与VertexBuffer的Create函数一样，为static的函数，在定义的时候不需要写static关键字
 		// 而且这个Create函数是在基类定义的，因为创建的窗口对象应该包含多种平台的派生类对象，所以放到了基类里
 		// 而且这个基类的cpp引用了相关的派生类的头文件，相关的Create函数定义在VertexArray.cpp里完成
-		static VertexArray* Create();
+		static Ref<VertexArray> Create();
 
 		virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const = 0;
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() const = 0;

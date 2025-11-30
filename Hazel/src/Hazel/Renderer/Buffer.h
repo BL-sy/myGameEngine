@@ -120,7 +120,7 @@ namespace Hazel {
 		virtual void SetLayout(BufferLayout& layout) = 0;
 
 		// 工厂函数：根据当前渲染API创建平台对应的VertexBuffer实例
-		static VertexBuffer* Create(float* vertices, uint32_t size);
+		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 
 	// 索引缓冲区
@@ -137,6 +137,6 @@ namespace Hazel {
 		virtual uint32_t GetCount() const = 0;
 
 		// 工厂函数：根据当前渲染API创建平台对应的IndexBuffer实例
-		static IndexBuffer* Create(uint32_t* indices, uint32_t size);
+		static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t size);
 	};
 }

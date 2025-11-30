@@ -24,6 +24,3 @@
 #include "Hazel/Renderer/Texture.h"
 #include "Hazel/Renderer/VertexArray.h"
 #include "Hazel/Renderer/OrthographicCamera.h"
-
-// 入口回调
-#include "Hazel/Core/EntryPoint.h"
