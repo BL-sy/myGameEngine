@@ -21,7 +21,7 @@ namespace Hazel {
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
-	void OpenGLVertexBuffer::SetLayout(BufferLayout& layout)
+	void OpenGLVertexBuffer::SetLayout(const BufferLayout& layout)
 	{
 		m_Layout = layout;
 	}

@@ -117,7 +117,7 @@ namespace Hazel {
 		// 获取顶点布局（上层可查询布局信息，平台实现可读取布局配置属性）
 		virtual const BufferLayout& GetBufferLayout() const = 0;
 		// 设置顶点布局（将布局与缓冲绑定，必须在绑定缓冲后调用）
-		virtual void SetLayout(BufferLayout& layout) = 0;
+		virtual void SetLayout(const BufferLayout& layout) = 0;
 
 		// 工厂函数：根据当前渲染API创建平台对应的VertexBuffer实例
 		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
