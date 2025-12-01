@@ -6,7 +6,8 @@
 
 #include "VertexArray.h"
 #include "Shader.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Hazel {
 
@@ -59,28 +60,47 @@ namespace Hazel {
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->UploadUniformMat4("u_Transform", glm::mat4(1.0f));
+		s_Data->FlatColorShader->Bind();
+		s_Data->FlatColorShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer2D::EndScene()
 	{
-
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+	
+	
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float rotation)
 	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, color);
+		DrawQuad({ position.x, position.y, 0.0f }, size, color, { 0.5f, 0.5f }, rotation);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, const glm::vec2& anchor, float rotation)
 	{
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->UploadUniformFloat4("u_Color", color);
+		DrawQuad({ position.x, position.y, 0.0f }, size, color, anchor, rotation);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, const glm::vec2& anchor, float rotation)
+	{
+		glm::vec2 localAnchorOffset = {(anchor.x - 0.5f) * size.x, (anchor.y - 0.5f) * size.y};
+		// 核心修改：直接用局部锚点（anchor）调用Rotate，不用算世界坐标！
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+			* RotateLocal(rotation, localAnchorOffset)  // 这里直接传 anchor（局部坐标！）
+			* glm::scale(glm::mat4(1.0f), { size, 1.0f });
+
+		s_Data->FlatColorShader->SetMat4("u_Transform", transform);
+		s_Data->FlatColorShader->Bind();
+		s_Data->FlatColorShader->SetFloat4("u_Color", color);
 
 		s_Data->QuadVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
+	}
+
+	glm::mat4 Renderer2D::RotateLocal(float rotation, const glm::vec2& localAnchorOffset) {
+		// 本地空间旋转逻辑：平移到本地锚点 → 旋转 → 平移回原点
+		return glm::translate(glm::mat4(1.0f), glm::vec3(localAnchorOffset, 0.0f))
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f))
+			* glm::translate(glm::mat4(1.0f), glm::vec3(-localAnchorOffset, 0.0f));
 	}
 
 }

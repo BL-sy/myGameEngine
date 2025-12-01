@@ -20,4 +20,9 @@ private:
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 
 	glm::vec4 m_SquareColor = { 0.6f, 0.3f, 0.8f, 1.0f };
+
+	float m_SquareMoveSpeed = 1.0f;
+	glm::vec2 m_SquarePosition = { 0.0f, 0.0f };
+	float m_SquareRotateSpeed = 90.0f;
+	float m_Rotation = 0.0f;
 };

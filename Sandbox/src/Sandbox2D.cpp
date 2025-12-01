@@ -28,6 +28,21 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 	// Update
 	m_CameraController.OnUpdate(ts);
 
+	if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT))
+		m_SquarePosition.x -= m_SquareMoveSpeed * ts;
+	else if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT))
+		m_SquarePosition.x += m_SquareMoveSpeed * ts;
+
+	if (Hazel::Input::IsKeyPressed(HZ_KEY_UP))
+		m_SquarePosition.y += m_SquareMoveSpeed * ts;
+	else if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN))
+		m_SquarePosition.y -= m_SquareMoveSpeed * ts;
+
+	if (Hazel::Input::IsKeyPressed(HZ_KEY_Z))
+		m_Rotation -= m_SquareRotateSpeed * ts;
+	else if (Hazel::Input::IsKeyPressed(HZ_KEY_C))
+		m_Rotation += m_SquareRotateSpeed * ts;
+
 	// Render
 	// 1. 抽象清屏命令
 	Hazel::RenderCommand::Clear();
@@ -36,8 +51,8 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 	// 2. 渲染流程
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, m_SquareColor);
-	Hazel::Renderer2D::DrawQuad({ 1.0f, 1.0f }, { 0.5f, 0.5f }, glm::vec4{0.8f, 0.3f, 0.5f, 1.0f});
+	Hazel::Renderer2D::DrawQuad(m_SquarePosition + glm::vec2{ 0.5f, 0.5f }, { 0.5f, 0.5f }, glm::vec4{ 0.8f, 0.3f, 0.4f, 1.0f }, m_Rotation);
+	Hazel::Renderer2D::DrawQuad(m_SquarePosition, { 1.0f, 1.0f }, m_SquareColor, {0.0f, 0.0f}, m_Rotation);
 
 	Hazel::Renderer2D::EndScene();
 }

@@ -6,6 +6,7 @@ layout(location = 1) in vec2 a_TexCoord;
 
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Transform;
+uniform mat4 u_Rotation;
 
 void main()
 {
