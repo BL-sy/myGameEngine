@@ -19,6 +19,8 @@ private:
 	Hazel::Ref<Hazel::Shader> m_SquareShader;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
+
 	glm::vec4 m_SquareColor = { 0.6f, 0.3f, 0.8f, 1.0f };
 
 	float m_SquareMoveSpeed = 1.0f;

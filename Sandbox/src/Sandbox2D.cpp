@@ -17,6 +17,7 @@ Sandbox2D::~Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
+	m_Texture = Hazel::Texture2D::Create("assets/textures/asuka.png");
 }
 
 void Sandbox2D::OnDetach()
@@ -50,10 +51,12 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 
 	// 2. 渲染流程
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	
+	// 3. 绘制四边形
+	Hazel::Renderer2D::DrawQuad(m_SquarePosition + glm::vec2{ 0.5f, 0.5f }, { 0.5f, 0.5f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.8f }, { 0.0f, 1.0f }, m_Rotation, m_Texture);
+	Hazel::Renderer2D::DrawQuad(m_SquarePosition, { 1.0f, 1.0f }, m_SquareColor, { 0.0f, 0.0f }, m_Rotation);
 
-	Hazel::Renderer2D::DrawQuad(m_SquarePosition + glm::vec2{ 0.5f, 0.5f }, { 0.5f, 0.5f }, glm::vec4{ 0.8f, 0.3f, 0.4f, 1.0f }, m_Rotation);
-	Hazel::Renderer2D::DrawQuad(m_SquarePosition, { 1.0f, 1.0f }, m_SquareColor, {0.0f, 0.0f}, m_Rotation);
-
+	// 4. 结束场景
 	Hazel::Renderer2D::EndScene();
 }
 
