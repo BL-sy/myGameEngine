@@ -16,7 +16,6 @@ namespace Hazel {
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
-		virtual void OnImGuiRender() override;
 
 		void Begin();// 启动ImGui帧（在所有Layer的OnImGuiRender前调用）
 		void End();// 结束ImGui帧（在所有Layer的OnImGuiRender后调用）

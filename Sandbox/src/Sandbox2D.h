@@ -1,5 +1,6 @@
 #pragma once
 #include "Hazel.h"
+#include <chrono>
 
 class Sandbox2D : public Hazel::Layer
 {
@@ -27,4 +28,12 @@ private:
 	glm::vec2 m_SquarePosition = { 0.0f, 0.0f };
 	float m_SquareRotateSpeed = 90.0f;
 	float m_Rotation = 0.0f;
+
+	struct ProfileResult
+	{
+		const char* Name;
+		float Time;
+	};
+
+	std::vector<ProfileResult> m_ProfileResults;
 };

@@ -91,10 +91,5 @@ namespace Hazel {
 			glfwMakeContextCurrent(backup_ctx);   // 恢复Hazel的GL上下文
 		}
 	}
-	void ImGuiLayer::OnImGuiRender()
-	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);// 显示ImGui官方Demo窗口
-	}
 
 }

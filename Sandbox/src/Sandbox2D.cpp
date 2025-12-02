@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+
 Sandbox2D::Sandbox2D()
 	:Layer("Sandbox2D"), m_CameraController(1280.0f / 720.0f, true)
 {
@@ -26,6 +27,7 @@ void Sandbox2D::OnDetach()
 
 void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 {
+	HZ_PROFILE_FUNCTION();
 	// Update
 	m_CameraController.OnUpdate(ts);
 
@@ -53,8 +55,8 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	
 	// 3. 绘制四边形
-	Hazel::Renderer2D::DrawQuad(m_SquarePosition + glm::vec2{ 0.5f, 0.5f }, { 0.5f, 0.5f }, glm::vec4{ 1.0f, 1.0f, 1.0f, 0.8f }, { 0.0f, 1.0f }, m_Rotation, m_Texture);
-	Hazel::Renderer2D::DrawQuad(m_SquarePosition, { 1.0f, 1.0f }, m_SquareColor, { 0.0f, 0.0f }, m_Rotation);
+	Hazel::Renderer2D::DrawQuad(m_SquarePosition + glm::vec2{ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_SquareColor, { 0.0f, 1.0f }, m_Rotation);
+	Hazel::Renderer2D::DrawQuad(m_SquarePosition, { 20.0f, 20.0f }, m_SquareColor, { 0.0f, 0.0f }, m_Rotation, m_Texture);
 
 	// 4. 结束场景
 	Hazel::Renderer2D::EndScene();
