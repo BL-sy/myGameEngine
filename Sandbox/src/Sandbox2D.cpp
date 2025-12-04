@@ -55,8 +55,8 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	
 	// 3. 绘制四边形
-	Hazel::Renderer2D::DrawQuad(m_SquarePosition + glm::vec2{ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_SquareColor, { 0.0f, 1.0f }, m_Rotation);
-	Hazel::Renderer2D::DrawQuad(m_SquarePosition, { 20.0f, 20.0f }, m_SquareColor, { 0.0f, 0.0f }, m_Rotation, m_Texture);
+	Hazel::Renderer2D::DrawQuad({0.0f, 0.0f, -0.1f}, { 20.0f, 20.0f }, m_Texture, 10.0f);
+	Hazel::Renderer2D::DrawRotatedQuad(m_SquarePosition + glm::vec2{ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_SquareColor, m_Rotation);
 
 	// 4. 结束场景
 	Hazel::Renderer2D::EndScene();
