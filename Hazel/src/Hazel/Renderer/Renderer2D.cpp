@@ -112,11 +112,6 @@ namespace Hazel {
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
 		s_Data->TextureShader->SetFloat4("u_Color", tintColor);
 		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
-
-		texture->Bind();
-
-		s_Data->QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data->QuadVertexArray);
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float rotation, const glm::vec2& anchor)
@@ -149,8 +144,6 @@ namespace Hazel {
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float rotation, const glm::vec2& anchor, float tilingFactor, const glm::vec4& tintColor)
 	{
-		
-
 		glm::vec2 localAnchorOffset = { (anchor.x - 0.5f) * size.x, (anchor.y - 0.5f) * size.y };
 		// 核心修改：直接用局部锚点（anchor）调用Rotate，不用算世界坐标！
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
